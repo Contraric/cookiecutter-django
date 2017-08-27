@@ -70,7 +70,7 @@ def make_secret_key(project_directory):
     # Determine the local_setting_file_location
     local_setting = os.path.join(
         project_directory,
-        'config/settings/local.py'
+        'backend/config/settings/local.py'
     )
 
     # local.py settings file
@@ -95,7 +95,7 @@ def remove_task_app(project_directory):
     # Determine the local_setting_file_location
     task_app_location = os.path.join(
         PROJECT_DIRECTORY,
-        '{{ cookiecutter.project_slug }}/taskapp'
+        'backend/apps/taskapp'
     )
     shutil.rmtree(task_app_location)
 
@@ -139,24 +139,6 @@ def remove_docker_files():
         PROJECT_DIRECTORY, "compose"
     ))
 
-
-def remove_grunt_files():
-    """
-    Removes files needed for grunt if it isn't going to be used
-    """
-    for filename in ["Gruntfile.js"]:
-        os.remove(os.path.join(
-            PROJECT_DIRECTORY, filename
-        ))
-
-def remove_gulp_files():
-    """
-    Removes files needed for grunt if it isn't going to be used
-    """
-    for filename in ["gulpfile.js"]:
-        os.remove(os.path.join(
-            PROJECT_DIRECTORY, filename
-        ))
 
 def remove_packageJSON_file():
     """
@@ -239,26 +221,6 @@ if '{{ cookiecutter.use_heroku }}'.lower() != 'y':
 # Removes all docker files if it isn't going to be used
 if '{{ cookiecutter.use_docker }}'.lower() != 'y':
     remove_docker_files()
-
-# Removes all JS task manager files if it isn't going to be used
-if '{{ cookiecutter.js_task_runner}}'.lower() == 'gulp':
-    remove_grunt_files()
-elif '{{ cookiecutter.js_task_runner}}'.lower() == 'grunt':
-    remove_gulp_files()
-else:
-    remove_gulp_files()
-    remove_grunt_files()
-    remove_packageJSON_file()
-
-# Display a warning if use_docker and use_grunt are selected. Grunt isn't
-#   supported by our docker config atm.
-if '{{ cookiecutter.js_task_runner }}'.lower() in ['grunt', 'gulp'] and '{{ cookiecutter.use_docker }}'.lower() == 'y':
-    print(
-        "You selected to use docker and a JS task runner. This is NOT supported out of the box for now. You "
-        "can continue to use the project like you normally would, but you will need to add a "
-        "js task runner service to your docker configuration manually."
-    )
-
 
 # Removes files needed for the GPLv3 licence if it isn't going to be used.
 if '{{ cookiecutter.open_source_license}}' != 'GPLv3':

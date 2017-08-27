@@ -361,3 +361,7 @@ mailhog
 {% endif %}
 
 {{ cookiecutter.project_slug }}/media/
+
+### Webpack
+webpack-stats.json
+static/dist

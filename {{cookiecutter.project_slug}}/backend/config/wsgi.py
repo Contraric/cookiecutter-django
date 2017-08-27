@@ -20,11 +20,11 @@ from django.core.wsgi import get_wsgi_application
 
 # This allows easy placement of apps within the interior
 # {{ cookiecutter.project_slug }} directory.
-app_path = os.path.dirname(os.path.abspath(__file__)).replace('/config', '')
-sys.path.append(os.path.join(app_path, '{{ cookiecutter.project_slug }}'))
+apps_path = os.path.dirname(os.path.abspath(__file__)).replace('/config', '')
+sys.path.append(os.path.join(apps_path, 'apps'))
 
 {% if cookiecutter.use_sentry_for_error_reporting == 'y' -%}
-if os.environ.get('DJANGO_SETTINGS_MODULE') == 'config.settings.production':
+if os.environ.get('DJANGO_SETTINGS_MODULE') == 'backend.config.settings.production':
     from raven.contrib.django.raven_compat.middleware.wsgi import Sentry
 {%- endif %}
 
@@ -32,14 +32,14 @@ if os.environ.get('DJANGO_SETTINGS_MODULE') == 'config.settings.production':
 # if running multiple sites in the same mod_wsgi process. To fix this, use
 # mod_wsgi daemon mode with each site in its own daemon process, or use
 # os.environ["DJANGO_SETTINGS_MODULE"] = "config.settings.production"
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.production")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "backend.config.settings.production")
 
 # This application object is used by any WSGI server configured to use this
 # file. This includes Django's development server, if the WSGI_APPLICATION
 # setting points here.
 application = get_wsgi_application()
 {% if cookiecutter.use_sentry_for_error_reporting == 'y' -%}
-if os.environ.get('DJANGO_SETTINGS_MODULE') == 'config.settings.production':
+if os.environ.get('DJANGO_SETTINGS_MODULE') == 'backend.config.settings.production':
     application = Sentry(application)
 {%- endif %}
 # Apply WSGI middleware here.

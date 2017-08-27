@@ -7,14 +7,14 @@ from django.conf import settings
 
 if not settings.configured:
     # set the default Django settings module for the 'celery' program.
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.local')  # pragma: no cover
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'backend.config.settings.local')  # pragma: no cover
 
 
 app = Celery('{{cookiecutter.project_slug}}')
 
 
 class CeleryConfig(AppConfig):
-    name = '{{cookiecutter.project_slug}}.taskapp'
+    name = 'taskapp'
     verbose_name = 'Celery Config'
 
     def ready(self):

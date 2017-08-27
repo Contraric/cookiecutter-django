@@ -9,8 +9,9 @@ https://docs.djangoproject.com/en/dev/ref/settings/
 """
 import environ
 
-ROOT_DIR = environ.Path(__file__) - 3  # ({{ cookiecutter.project_slug }}/config/settings/base.py - 3 = {{ cookiecutter.project_slug }}/)
-APPS_DIR = ROOT_DIR.path('{{ cookiecutter.project_slug }}')
+ROOT_DIR = environ.Path(__file__) - 4  # ({{ cookiecutter.project_slug }}/backend/config/settings/base.py - 4 = {{ cookiecutter.project_slug }}/)
+BACKEND_DIR = ROOT_DIR.path('backend')
+APPS_DIR = BACKEND_DIR.path('apps')
 
 # Load operating system environment variables and then prepare to use them
 env = environ.Env()
@@ -49,12 +50,13 @@ THIRD_PARTY_APPS = [
     'allauth',  # registration
     'allauth.account',  # registration
     'allauth.socialaccount',  # registration
+    'webpack_loader',
 ]
 
 # Apps specific for this project go here.
 LOCAL_APPS = [
     # custom users app
-    '{{ cookiecutter.project_slug }}.users.apps.UsersConfig',
+    'users.apps.UsersConfig',
     # Your stuff: custom apps go here
 ]
 
@@ -76,7 +78,7 @@ MIDDLEWARE = [
 # MIGRATIONS CONFIGURATION
 # ------------------------------------------------------------------------------
 MIGRATION_MODULES = {
-    'sites': '{{ cookiecutter.project_slug }}.contrib.sites.migrations'
+    'sites': 'contrib.sites.migrations'
 }
 
 # DEBUG
@@ -88,7 +90,7 @@ DEBUG = env.bool('DJANGO_DEBUG', False)
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-FIXTURE_DIRS
 FIXTURE_DIRS = (
-    str(APPS_DIR.path('fixtures')),
+    str(BACKEND_DIR.path('fixtures')),
 )
 
 # EMAIL CONFIGURATION
@@ -146,7 +148,7 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         # See: https://docs.djangoproject.com/en/dev/ref/settings/#template-dirs
         'DIRS': [
-            str(APPS_DIR.path('templates')),
+            str(BACKEND_DIR.path('templates')),
         ],
         'OPTIONS': {
             # See: https://docs.djangoproject.com/en/dev/ref/settings/#template-debug
@@ -186,7 +188,7 @@ STATIC_URL = '/static/'
 
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
 STATICFILES_DIRS = [
-    str(APPS_DIR.path('static')),
+    str(ROOT_DIR.path('static')),
 ]
 
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#staticfiles-finders
@@ -198,17 +200,17 @@ STATICFILES_FINDERS = [
 # MEDIA CONFIGURATION
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#media-root
-MEDIA_ROOT = str(APPS_DIR('media'))
+MEDIA_ROOT = str(BACKEND_DIR('media'))
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#media-url
 MEDIA_URL = '/media/'
 
 # URL Configuration
 # ------------------------------------------------------------------------------
-ROOT_URLCONF = 'config.urls'
+ROOT_URLCONF = 'backend.config.urls'
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#wsgi-application
-WSGI_APPLICATION = 'config.wsgi.application'
+WSGI_APPLICATION = 'backend.config.wsgi.application'
 
 # PASSWORD STORAGE SETTINGS
 # ------------------------------------------------------------------------------
@@ -253,8 +255,8 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 
 ACCOUNT_ALLOW_REGISTRATION = env.bool('DJANGO_ACCOUNT_ALLOW_REGISTRATION', True)
-ACCOUNT_ADAPTER = '{{cookiecutter.project_slug}}.users.adapters.AccountAdapter'
-SOCIALACCOUNT_ADAPTER = '{{cookiecutter.project_slug}}.users.adapters.SocialAccountAdapter'
+ACCOUNT_ADAPTER = 'users.adapters.AccountAdapter'
+SOCIALACCOUNT_ADAPTER = 'users.adapters.SocialAccountAdapter'
 
 # Custom user app defaults
 # Select the correct user model
@@ -266,7 +268,7 @@ LOGIN_URL = 'account_login'
 AUTOSLUG_SLUGIFY_FUNCTION = 'slugify.slugify'
 {% if cookiecutter.use_celery == 'y' %}
 ########## CELERY
-INSTALLED_APPS += ['{{cookiecutter.project_slug}}.taskapp.celery.CeleryConfig']
+INSTALLED_APPS += ['taskapp.celery.CeleryConfig']
 CELERY_BROKER_URL = env('CELERY_BROKER_URL', default='django://')
 if CELERY_BROKER_URL == 'django://':
     CELERY_RESULT_BACKEND = 'redis://'
